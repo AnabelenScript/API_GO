@@ -3,7 +3,6 @@ package controllers
 import (
 	"API_GO/users/application"
 	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 

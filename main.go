@@ -16,10 +16,18 @@ func main() {
     defer dbConn.Close()
     //Configurar repositorio, servicio y controlador
     userRepo := db.NewMySQLUserRepository(dbConn)
+	//casos de uso
     createUser := application.NewCreateUser(userRepo)
+	updateUser := application.NewUpdateUser(userRepo)
+	deleteUser := application.NewDeleteUser(userRepo)
+    getAllUser := application.NewGetAllUsers(userRepo)
+	//controladores
     createUserController := controllers.NewCreateUserController(createUser)
+	updateUserController := controllers.NewUpdateUserController(updateUser)
+	deleteUserController := controllers.NewDeleteUserController(deleteUser)
+    getAllUserController := controllers.NewGetAllUserController(getAllUser)
     r := gin.Default()
-    routes.SetupUsersRoutes(r, createUserController)
+    routes.SetupUsersRoutes(r, createUserController, updateUserController,deleteUserController, getAllUserController)
     log.Println("Server running on :8080")
     r.Run(":8080")
 }

@@ -1,16 +1,19 @@
 package application
 
 import (
-	"fmt"
-	"api_prueba/users/domain"
+	"API_GO/users/domain/entities"
+	"API_GO/users/domain"
 )
 
-type UserService struct {
+type CreateUser struct {
 	Repo domain.UserRepository
 }
 
-func (s *UserService) CreateUser(name, email string) error {
-	user := &domain.User{Name: name, Email: email}
-	fmt.Println("Si funca")
-	return s.Repo.Save(user)
+func NewCreateUser(repo domain.UserRepository) *CreateUser {
+	return &CreateUser{Repo: repo}
+}
+
+func (uc *CreateUser) Execute(name, email string) error {
+	user := &entities.User{Name: name, Email: email}
+	return uc.Repo.Save(user)
 }

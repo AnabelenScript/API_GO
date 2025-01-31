@@ -1,25 +1,25 @@
 package main
 
 import (
-	"api_prueba/helpers"
-	"api_prueba/users/application"
-	"api_prueba/users/infraestructure/db"
-	"api_prueba/users/infraestructure/http_handlers"
-	"log"
-	"net/http"
+    "API_GO/helpers"
+    "API_GO/users/application"
+    "API_GO/users/infraestructure/db"
+    "API_GO/users/infraestructure/controllers"
+    "API_GO/users/infraestructure/routes"
+    "github.com/gin-gonic/gin"
+    "log"
 )
 
 func main() {
-	// Conexión a MySQL
-	dbConn := helpers.ConnectToMySQL()
-	defer dbConn.Close()
-
-	//Configura el repositorio, servicio y http
-	userRepo := db.NewMySQLUserRepository(dbConn)
-	userService := &application.UserService{Repo: userRepo}
-	userHandler := &http_handlers.UserHandler{Service: userService}
-
-	http.HandleFunc("/users", userHandler.CreateUser)
-	log.Println("Server running on :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+   //Inicia conexion a mysql
+    dbConn := helpers.ConnectToMySQL()
+    defer dbConn.Close()
+    //Configurar repositorio, servicio y controlador
+    userRepo := db.NewMySQLUserRepository(dbConn)
+    createUser := application.NewCreateUser(userRepo)
+    createUserController := controllers.NewCreateUserController(createUser)
+    r := gin.Default()
+    routes.SetupUsersRoutes(r, createUserController)
+    log.Println("Server running on :8080")
+    r.Run(":8080")
 }

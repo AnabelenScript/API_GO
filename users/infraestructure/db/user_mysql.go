@@ -2,20 +2,24 @@ package db
 
 import (
 	"database/sql"
-	"api_prueba/users/domain"
+	"API_GO/users/domain/entities"
+	"API_GO/users/domain"
+	"log"
 )
-//Repositorio de mysql
 
 type MySQLUserRepository struct {
 	DB *sql.DB
 }
 
-func NewMySQLUserRepository(db *sql.DB) *MySQLUserRepository {
+func NewMySQLUserRepository(db *sql.DB) domain.UserRepository {
 	return &MySQLUserRepository{DB: db}
 }
 
-func (r *MySQLUserRepository) Save(user *domain.User) error {
+func (r *MySQLUserRepository) Save(user *entities.User) error {
 	query := "INSERT INTO users (name, email) VALUES (?, ?)"
 	_, err := r.DB.Exec(query, user.Name, user.Email)
+	if err != nil {
+		log.Printf("Error al insertar usuario: %v", err)
+	}
 	return err
 }

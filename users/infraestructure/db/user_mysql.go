@@ -29,7 +29,6 @@ func (r *MySQLUserRepository) Save(user *entities.User) error {
 func (r *MySQLUserRepository) FindByID(id uint) (*entities.User, error) {
 	query := "SELECT id, name, email FROM users WHERE id = ?"
 	row := r.DB.QueryRow(query, id)
-
 	var user entities.User
 	err := row.Scan(&user.ID, &user.Name, &user.Email)
 	if err != nil {
@@ -53,7 +52,6 @@ func (r *MySQLUserRepository) Update(user *entities.User) error {
 	if rowsAffected == 0 {
 		return errors.New("no se encontró el usuario para actualizar")
 	}
-
 	return nil
 }
 

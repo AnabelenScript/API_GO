@@ -23,7 +23,6 @@ func (uc *DeleteUserController) Execute(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
 		return
 	}
-
 	if err := uc.useCase.Execute(uint(userID)); err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return

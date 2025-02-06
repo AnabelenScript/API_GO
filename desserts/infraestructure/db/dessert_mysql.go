@@ -96,4 +96,48 @@ func (r *MySQLDessertRepository) GetAll() ([]*entities.Dessert, error) {
 	return desserts, nil
 }
 
+func (r *MySQLDessertRepository) GetLastDessert() (*entities.Dessert, error) {
+	rows, err := r.DB.Query("SELECT ID, name, flavor, price, quantity FROM dessert ORDER BY ID DESC LIMIT 1")
+	if err != nil {
+		log.Printf("Error al obtener el último postre registrado: %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var dessert entities.Dessert
+
+	if rows.Next() {
+		if err := rows.Scan(&dessert.Id, &dessert.Name, &dessert.Flavor, &dessert.Price, &dessert.Quantity); err != nil {
+			log.Printf("Error al escanear el postre: %v", err)
+			return nil, err
+		}
+		log.Printf("Último postre agregado -> ID: %d, Nombre: %s, Sabor: %s, Precio: %d, Cantidad: %d", dessert.Id, dessert.Name, dessert.Flavor, dessert.Price, dessert.Quantity)
+	} else {
+		return nil, errors.New("No se encontraron postres en la base de datos")
+	}
+
+	return &dessert, nil
+}
+
+func (r *MySQLDessertRepository) GetAllDessertsForDelete() ([]*entities.Dessert, error) {
+	query := "SELECT ID, name, flavor, price, quantity FROM dessert"
+	rows, err := r.DB.Query(query)
+	if err != nil {
+		log.Printf("Error al obtener todos los postres: %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var desserts []*entities.Dessert
+	for rows.Next() {
+		dessert := &entities.Dessert{}
+		if err := rows.Scan(&dessert.Id, &dessert.Name, &dessert.Flavor,&dessert.Price, &dessert.Quantity); err != nil {
+			log.Printf("Error al escanear el postre: %v", err)
+			return nil, err
+		}
+		desserts = append(desserts, dessert)
+	}
+
+	return desserts, nil
+}
 

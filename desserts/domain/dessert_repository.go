@@ -8,4 +8,6 @@ type DessertRepository interface {
 	Update(dessert *entities.Dessert) error
 	Delete(id uint) error
 	GetAll() ([]*entities.Dessert, error)
+	GetLastDessert()(*entities.Dessert, error)
+	GetAllDessertsForDelete()([]* entities.Dessert, error)
 }

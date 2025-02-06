@@ -93,4 +93,27 @@ func (r *MySQLUserRepository) GetAll() ([]*entities.User, error) {
 	return users, nil
 }
 
+func (r *MySQLUserRepository) GetLastAddedUser() (*entities.User, error) {
+	rows, err := r.DB.Query("SELECT ID, name, email FROM users ORDER BY ID DESC LIMIT 1")
+	if err != nil {
+		log.Printf("Error al obtener el último usuario registrado: %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var user entities.User
+
+	if rows.Next() {
+		if err := rows.Scan(&user.ID, &user.Name, &user.Email); err != nil {
+			log.Printf("Error al escanear el postre: %v", err)
+			return nil, err
+		}
+		log.Printf("Último usuario agregado -> ID: %d, Nombre: %s, Email: %s", user.ID, user.Name, user.Email)
+	} else {
+		return nil, errors.New("No se encontraron usuarios en la base de datos")
+	}
+
+	return &user, nil
+}
+
 

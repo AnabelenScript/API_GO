@@ -26,7 +26,7 @@ func (c *CreateDessertController) Execute(ctx *gin.Context) {
 		return
 	}
 	if err := c.useCase.Execute(input.Name, input.Flavor, input.Price, input.Quantity); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error al crear usuario"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error al actualizar el postre"})
 		return
 	}
 	ctx.JSON(http.StatusCreated, gin.H{"message": "Postre creado creado :)"})

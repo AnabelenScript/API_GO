@@ -2,9 +2,10 @@ package controllers
 
 import (
 	"API_GO/users/application"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 type UpdateUserController struct {

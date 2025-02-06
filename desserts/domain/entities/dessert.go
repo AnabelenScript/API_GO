@@ -1,7 +1,7 @@
 package entities
 
 type Dessert struct {
-	ID    int
+	Id    int
 	Name  string
 	Flavor string
 	Price int

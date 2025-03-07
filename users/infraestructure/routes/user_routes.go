@@ -17,5 +17,4 @@ func SetupUsersRoutes(
 	r.DELETE("users/:id", NewDeleteUserController.Execute)
 	r.GET("/users", NewGetAllUserController.Execute)
 	/*r.GET("/users/getLast", NewGetLastUserController.Execute)*/
-
 }

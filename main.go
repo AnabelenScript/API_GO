@@ -15,6 +15,12 @@ import (
 	dessertControllers "API_GO/desserts/infraestructure/controllers"
 	dessertInfra "API_GO/desserts/infraestructure/db"
 	dessertRoutes "API_GO/desserts/infraestructure/routes"
+	
+	pedidosApplication "API_GO/pedidos/application"
+	pedidosControllers "API_GO/pedidos/infraestructure/controllers"
+	pedidosInfra "API_GO/pedidos/infraestructure/db"
+	pedidosRoutes "API_GO/pedidos/infraestructure/routes"
+
 )
 
 func main() {
@@ -25,7 +31,7 @@ func main() {
 	// Configurar repositorio, servicio y controlador
 	userRepo := db.NewMySQLUserRepository(dbConn)
 	dessertRepo := dessertInfra.NewMySQLDessertRepository(dbConn)
-
+	pedidosRepo := pedidosInfra.NewMySQLPedidosRepository(dbConn)
 	// Casos de uso
 	createUser := application.NewCreateUser(userRepo)
 	updateUser := application.NewUpdateUser(userRepo)
@@ -41,6 +47,10 @@ func main() {
 	/*getDeletedDessert := dessertApplication.NewGetDeletedDessert(dessertRepo)*/
 	getPriceDessert := dessertApplication.NewGetPriceDessert(dessertRepo)
 
+	createPedidos := pedidosApplication.NewCreatePedidos(pedidosRepo)
+	deletePedidos := pedidosApplication.NewDeletePedido(pedidosRepo)
+	updatePedidos := pedidosApplication.NewUpdatePedidos(pedidosRepo)
+	getAllPedidos := pedidosApplication.NewGetAllPedidos(pedidosRepo)
 	// Controladores
 	createUserController := controllers.NewCreateUserController(createUser)
 	updateUserController := controllers.NewUpdateUserController(updateUser)
@@ -55,6 +65,12 @@ func main() {
 	/*getLastDesserts := dessertControllers.NewGetLastDessertController(*getLastDessert)*/
 	/*getDeletedDessertController := dessertControllers.NewGetDeletedDessertController(*getDeletedDessert)*/
 	getPriceDessertController := dessertControllers.NewGetPriceDessertController(getPriceDessert)
+
+	createPedidosController := pedidosControllers.NewCreatePedidosController(createPedidos)
+	deletePedidosController := pedidosControllers.NewDeleteUserController(deletePedidos)
+	updatePedidosController := pedidosControllers.NewUpdateUserController(updatePedidos)
+	getAllPedidosController := pedidosControllers.NewGetAllDessertController(getAllPedidos)
+
 
 	/*go func() {
 		ticker := time.NewTicker(10 * time.Second)
@@ -73,7 +89,7 @@ func main() {
 
 	routes.SetupUsersRoutes(r, createUserController, updateUserController, deleteUserController, getAllUserController, /*getLastUSerController*/)
 	dessertRoutes.SetupDessertsRoutes(r, createDessertController, updateDessertController, deleteDessertController, getAllDessertController, /*getLastDesserts, getDeletedDessertController,*/ getPriceDessertController)
-
+	pedidosRoutes.SetupPedidosRoutes(r, createPedidosController, updatePedidosController,  deletePedidosController, getAllPedidosController)
 	log.Println("Server running on :8080")
 	r.Run(":8080")
 }

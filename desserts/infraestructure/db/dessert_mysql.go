@@ -141,3 +141,27 @@ func (r *MySQLDessertRepository) GetAllDessertsForDelete() ([]*entities.Dessert,
 	return desserts, nil
 }
 
+
+func (r *MySQLDessertRepository) FindByPrice(price uint) ([]*entities.Dessert, error) {
+	query := "SELECT ID, name, flavor, price, quantity FROM dessert WHERE price = ?"
+	rows, err := r.DB.Query(query, price)
+	if err != nil {
+		log.Printf("Error al ejecutar la consulta: %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+	var desserts []*entities.Dessert
+	for rows.Next() {
+		var dessert entities.Dessert
+		err := rows.Scan(&dessert.Id, &dessert.Name, &dessert.Flavor, &dessert.Price, &dessert.Quantity)
+		if err != nil {
+			log.Printf("Error al escanear fila: %v", err)
+			return nil, err
+		}
+		desserts = append(desserts, &dessert)
+	}
+	if len(desserts) == 0 {
+		return nil, errors.New("No se encontraron postres con ese precio")
+	}
+	return desserts, nil
+}

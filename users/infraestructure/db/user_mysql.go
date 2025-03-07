@@ -93,7 +93,7 @@ func (r *MySQLUserRepository) GetAll() ([]*entities.User, error) {
 	return users, nil
 }
 
-func (r *MySQLUserRepository) GetLastAddedUser() (*entities.User, error) {
+/* func (r *MySQLUserRepository) GetLastAddedUser() (*entities.User, error) {
 	rows, err := r.DB.Query("SELECT ID, name, email FROM users ORDER BY ID DESC LIMIT 1")
 	if err != nil {
 		log.Printf("Error al obtener el último usuario registrado: %v", err)
@@ -114,6 +114,4 @@ func (r *MySQLUserRepository) GetLastAddedUser() (*entities.User, error) {
 	}
 
 	return &user, nil
-}
-
-
+} */

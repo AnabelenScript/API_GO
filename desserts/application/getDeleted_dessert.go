@@ -1,4 +1,5 @@
 package application
+/*
 
 import (
 	"API_GO/desserts/domain/entities"
@@ -16,3 +17,4 @@ func NewGetDeletedDessert(repo domain.DessertRepository) *GetDeletedDessert {
 func (uc *GetDeletedDessert) GetAllDessertsForDeleteProcess() ([]*entities.Dessert, error) {
 	return uc.Repo.GetAllDessertsForDelete()
 }
+*/

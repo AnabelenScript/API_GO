@@ -1,5 +1,5 @@
 package application
-
+/*
 import(
 	"API_GO/users/domain/entities"
 	"API_GO/users/domain"
@@ -16,3 +16,4 @@ func NewGetLastUser(repo domain.UserRepository) *GetLastUser {
 func (uc *GetLastUser) GetLastUserProcess() (*entities.User, error) {
 	return uc.Repo.GetLastAddedUser()
 }
+*/

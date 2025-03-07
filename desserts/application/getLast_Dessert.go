@@ -1,5 +1,5 @@
 package application
-
+/*
 import(
 	"API_GO/desserts/domain/entities"
 	"API_GO/desserts/domain"
@@ -16,3 +16,4 @@ func NewGetLastDessert(repo domain.DessertRepository) *GetLastDesserts {
 func (uc *GetLastDesserts) GetLastDessertProcess() (*entities.Dessert, error) {
 	return uc.Repo.GetLastDessert()
 }
+*/

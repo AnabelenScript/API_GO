@@ -1,5 +1,5 @@
 package controllers
-
+/*
 import (
 	"net/http"
 	"strconv"
@@ -62,3 +62,4 @@ func (controller *GetLastUserController) Execute(c *gin.Context) {
 		}
 	}
 }
+*/

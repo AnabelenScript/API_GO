@@ -10,5 +10,5 @@ type UserRepository interface {
 	Update(user *entities.User) error 
 	Delete(id uint) error
 	GetAll() ([]*entities.User, error)
-	GetLastAddedUser()(*entities.User, error)
+	/*GetLastAddedUser()(*entities.User, error)*/
 }

@@ -11,11 +11,10 @@ func SetupUsersRoutes(
 	NewUpdateUserController *controllers.UpdateUserController, 
 	NewDeleteUserController *controllers.DeleteUserController, 
 	NewGetAllUserController *controllers.GetAllUserController,
-	NewGetLastUserController *controllers.GetLastUserController) {
+	/*NewGetLastUserController *controllers.GetLastUserController*/) {
     r.POST("/users", NewCreateUserController.Execute)
 	r.PUT("/users/:id", NewUpdateUserController.Execute)
 	r.DELETE("users/:id", NewDeleteUserController.Execute)
 	r.GET("/users", NewGetAllUserController.Execute)
-	r.GET("/users/getLast", NewGetLastUserController.Execute)
-
+	/*r.GET("/users/getLast", NewGetLastUserController.Execute)*/
 }

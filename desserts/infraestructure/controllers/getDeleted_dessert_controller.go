@@ -1,5 +1,5 @@
 package controllers
-
+/*
 import (
 	"API_GO/desserts/application"
 	"API_GO/desserts/domain/entities" 
@@ -58,3 +58,4 @@ func (controller *GetDeletedDessertController) Execute(c *gin.Context) {
         }
     }
 }
+*/

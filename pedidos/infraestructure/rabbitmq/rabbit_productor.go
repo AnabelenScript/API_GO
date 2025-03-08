@@ -7,7 +7,6 @@ import (
 	"API_GO/pedidos/domain/entities"
 )
 
-// Definimos el tipo PedidoMensaje, el cual será enviado a través de RabbitMQ
 type PedidoMensaje struct {
 	PedidoID       int   `json:"pedido_id"`
 	DessertID      int   `json:"dessert_id"`
@@ -16,9 +15,8 @@ type PedidoMensaje struct {
 	Estatus        string `json:"estatus"`
 }
 
-// Función para enviar el paquete de datos del pedido a RabbitMQ
 func SendPedidoToRabbitMQ(pedido *entities.Pedidos) error {
-	// Conexión con RabbitMQ
+
 	conn, err := amqp.Dial("amqp://anita:123456789@52.86.221.36:5672/")
 	if err != nil {
 		log.Fatal("Failed to connect to RabbitMQ:", err)

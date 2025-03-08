@@ -2,7 +2,7 @@ package entities
 
 
 type Pedidos struct {
-	Id         int
+	Pedido_id  int
 	Dessert_id int
 	User_id    int
 	Cantidad_producto int

@@ -12,8 +12,8 @@ func NewUpdatePedidos(repo domain.PedidosRepository) *UpdatePedidos {
 	return &UpdatePedidos{Repo: repo}
 }
 
-func (uc *UpdatePedidos) Execute(id uint, dessert_id int, user_id int, cantidad_producto int, estatus string) error {
-	pedido, err := uc.Repo.FindByID(id)
+func (uc *UpdatePedidos) Execute(pedido_id uint, dessert_id int, user_id int, cantidad_producto int, estatus string) error {
+	pedido, err := uc.Repo.FindByID(pedido_id)
 	if err != nil {
 		return err
 	}

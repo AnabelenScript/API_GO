@@ -27,8 +27,8 @@ func (c *CreatePedidosController) Execute(ctx *gin.Context) {
 		return
 	}
 	if err := c.useCase.Execute(input.Dessert_id, input.User_id, input.Cantidad_producto, input.Estatus); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error al actualizar el postre"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error al actualizar el pedido"})
 		return
 	}
-	ctx.JSON(http.StatusCreated, gin.H{"message": "Postre creado creado :)"})
+	ctx.JSON(http.StatusCreated, gin.H{"message": "Pedido creado creado :)"})
 }

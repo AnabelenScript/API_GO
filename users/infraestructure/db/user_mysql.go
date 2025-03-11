@@ -18,8 +18,8 @@ func NewMySQLUserRepository(db *sql.DB) domain.UserRepository {
 
 
 func (r *MySQLUserRepository) Save(user *entities.User) error {
-	query := "INSERT INTO users (name, email) VALUES (?, ?)"
-	_, err := r.DB.Exec(query, user.Name, user.Email)
+	query := "INSERT INTO users (name, email, user_type) VALUES (?, ?, ?)"
+	_, err := r.DB.Exec(query, user.Name, user.Email, user.User_type)
 	if err != nil {
 		log.Printf("Error al insertar usuario: %v", err)
 	}
@@ -72,7 +72,7 @@ func (r *MySQLUserRepository) Delete(userID uint) error {
 }
 
 func (r *MySQLUserRepository) GetAll() ([]*entities.User, error) {
-	query := "SELECT id, name, email FROM users"
+	query := "SELECT id, name, email, user_type FROM users"
 	rows, err := r.DB.Query(query)
 	if err != nil {
 		log.Printf("Error al obtener usuarios: %v", err)
@@ -83,7 +83,7 @@ func (r *MySQLUserRepository) GetAll() ([]*entities.User, error) {
 	var users []*entities.User
 	for rows.Next() {
 		user := &entities.User{}
-		if err := rows.Scan(&user.ID, &user.Name, &user.Email); err != nil {
+		if err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.User_type); err != nil {
 			log.Printf("Error al escanear usuario: %v", err)
 			return nil, err
 		}

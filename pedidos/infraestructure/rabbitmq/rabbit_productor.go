@@ -1,18 +1,19 @@
 package rabbitmq
 
 import (
-	"encoding/json"
-	"github.com/streadway/amqp"
-	"log"
 	"API_GO/pedidos/domain/entities"
+	"encoding/json"
+	"log"
+
+	"github.com/streadway/amqp"
 )
 
 type PedidoMensaje struct {
-	PedidoID       int   `json:"pedido_id"`
-	DessertID      int   `json:"dessert_id"`
-	UserID         int   `json:"user_id"`
-	CantidadProducto int  `json:"cantidad_producto"`
-	Estatus        string `json:"estatus"`
+	PedidoID         int    `json:"pedido_id"`
+	DessertID        int    `json:"dessert_id"`
+	UserID           int    `json:"user_id"`
+	CantidadProducto int    `json:"cantidad_producto"`
+	Estatus          string `json:"estatus"`
 }
 
 func SendPedidoToRabbitMQ(pedido *entities.Pedidos) error {
@@ -31,23 +32,23 @@ func SendPedidoToRabbitMQ(pedido *entities.Pedidos) error {
 	}
 	defer ch.Close()
 	_, err = ch.QueueDeclare(
-		"pedidos", 
-		true,      
-		false,     
-		false,     
-		false,    
-		nil,      
+		"pedidos",
+		true,
+		false,
+		false,
+		false,
+		nil,
 	)
 	if err != nil {
 		log.Fatal("Failed to declare a queue:", err)
 		return err
 	}
 	pedidoMensaje := PedidoMensaje{
-		PedidoID:       pedido.Pedido_id,
-		DessertID:      pedido.Dessert_id,
-		UserID:         pedido.User_id,
+		PedidoID:         pedido.Pedido_id,
+		DessertID:        pedido.Dessert_id,
+		UserID:           pedido.User_id,
 		CantidadProducto: pedido.Cantidad_producto,
-		Estatus:        pedido.Estatus,
+		Estatus:          pedido.Estatus,
 	}
 
 	msg, err := json.Marshal(pedidoMensaje)
@@ -57,10 +58,10 @@ func SendPedidoToRabbitMQ(pedido *entities.Pedidos) error {
 	}
 
 	err = ch.Publish(
-		"",        
-		"pedidos",  
-		false,      
-		false,     
+		"",
+		"pedidos",
+		false,
+		false,
 		amqp.Publishing{
 			ContentType: "application/json",
 			Body:        msg,

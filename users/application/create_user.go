@@ -13,7 +13,7 @@ func NewCreateUser(repo domain.UserRepository) *CreateUser {
 	return &CreateUser{Repo: repo}
 }
 
-func (uc *CreateUser) Execute(name, email string) error {
-	user := &entities.User{Name: name, Email: email}
+func (uc *CreateUser) Execute(name, email string, user_type int) error {
+	user := &entities.User{Name: name, Email: email, User_type: user_type}
 	return uc.Repo.Save(user)
 }

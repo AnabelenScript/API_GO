@@ -6,15 +6,19 @@ import (
 	"API_GO/pedidos/domain/entities"
 	"log"
 	"errors"
-	"API_GO/pedidos/infraestructure/rabbitmq"
+	"API_GO/pedidos/infraestructure/rabbitmq_producer"
+	"github.com/streadway/amqp"
 )
 
 type MySQLPedidosRepository struct {
 	DB *sql.DB
+	RabbitMQProducer *rabbitmq_producer.RabbitMQProducer
 }
 
-func NewMySQLPedidosRepository(db *sql.DB) domain.PedidosRepository {
-	return &MySQLPedidosRepository{DB: db}
+func NewMySQLPedidosRepository(db *sql.DB, ch *amqp.Channel) domain.PedidosRepository {
+	return &MySQLPedidosRepository{
+		RabbitMQProducer: rabbitmq_producer.NewRabbitMQProducer(ch),
+		DB: db}	
 }
 
 func (r *MySQLPedidosRepository) Save(pedido *entities.Pedidos) error {
@@ -30,7 +34,7 @@ func (r *MySQLPedidosRepository) Save(pedido *entities.Pedidos) error {
 		return err
 	}
 	pedido.Pedido_id = int(lastInsertID)
-	err = rabbitmq.SendPedidoToRabbitMQ(pedido)
+	err = r.RabbitMQProducer.SendPedidoToRabbitMQ(pedido)
 	if err != nil {
 		log.Printf("Error al enviar el pedido a RabbitMQ: %v", err)
 		return err

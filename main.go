@@ -24,19 +24,25 @@ import (
 )
 
 func main() {
-	// Inicia conexión a MySQL
 	dbConn := helpers.ConnectToMySQL()
 	defer dbConn.Close()
+	rabbitConn, ch, err := helpers.ConnectRabbitMQ()
+	if err != nil {
+		log.Fatalf("Error al conectar con RabbitMQ: %v", err)
+	}
+	defer rabbitConn.Close()
+	defer ch.Close()
 
 	// Configurar repositorio, servicio y controlador
 	userRepo := db.NewMySQLUserRepository(dbConn)
 	dessertRepo := dessertInfra.NewMySQLDessertRepository(dbConn)
-	pedidosRepo := pedidosInfra.NewMySQLPedidosRepository(dbConn)
+	pedidosRepo := pedidosInfra.NewMySQLPedidosRepository(dbConn, ch)
 	// Casos de uso
 	createUser := application.NewCreateUser(userRepo)
 	updateUser := application.NewUpdateUser(userRepo)
 	deleteUser := application.NewDeleteUser(userRepo)
 	getAllUser := application.NewGetAllUsers(userRepo)
+	loginUser := application.NewLoginUser(userRepo)
 	/*getLastUserAdded := application.NewGetLastUser(userRepo)*/
 
 	createDessert := dessertApplication.NewCreateDessert(dessertRepo)
@@ -56,6 +62,7 @@ func main() {
 	updateUserController := controllers.NewUpdateUserController(updateUser)
 	deleteUserController := controllers.NewDeleteUserController(deleteUser)
 	getAllUserController := controllers.NewGetAllUserController(getAllUser)
+	loginUserController := controllers.NewLoginUserController(loginUser)
 	/*getLastUSerController := controllers.NewGetLastUserController(*getLastUserAdded)*/
 
 	createDessertController := dessertControllers.NewCreateDessertController(createDessert)
@@ -88,7 +95,7 @@ func main() {
 
 	r.Use(cors.Default())
 
-	routes.SetupUsersRoutes(r, createUserController, updateUserController, deleteUserController, getAllUserController, /*getLastUSerController*/)
+	routes.SetupUsersRoutes(r, createUserController, updateUserController, deleteUserController, getAllUserController, /*getLastUSerController*/ loginUserController)
 	dessertRoutes.SetupDessertsRoutes(r, createDessertController, updateDessertController, deleteDessertController, getAllDessertController, /*getLastDesserts, getDeletedDessertController,*/ getPriceDessertController)
 	pedidosRoutes.SetupPedidosRoutes(r, createPedidosController, updatePedidosController,  deletePedidosController, getAllPedidosController)
 	log.Println("Server running on :8080")

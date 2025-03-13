@@ -1,4 +1,4 @@
-package rabbitmq
+package rabbitmq_producer
 
 import (
 	"API_GO/pedidos/domain/entities"
@@ -8,6 +8,7 @@ import (
 	"github.com/streadway/amqp"
 )
 
+// PedidoMensaje representa la estructura del mensaje que se enviará a RabbitMQ
 type PedidoMensaje struct {
 	PedidoID         int    `json:"pedido_id"`
 	DessertID        int    `json:"dessert_id"`
@@ -16,22 +17,20 @@ type PedidoMensaje struct {
 	Estatus          string `json:"estatus"`
 }
 
-func SendPedidoToRabbitMQ(pedido *entities.Pedidos) error {
+// NewRabbitMQProducer retorna una instancia lista para enviar mensajes
+type RabbitMQProducer struct {
+	Channel *amqp.Channel
+}
 
-	conn, err := amqp.Dial("amqp://anita:123456789@52.86.221.36:5672/")
-	if err != nil {
-		log.Fatal("Failed to connect to RabbitMQ:", err)
-		return err
-	}
-	defer conn.Close()
+// NewRabbitMQProducer inicializa el productor con un canal de RabbitMQ
+func NewRabbitMQProducer(ch *amqp.Channel) *RabbitMQProducer {
+	return &RabbitMQProducer{Channel: ch}
+}
 
-	ch, err := conn.Channel()
-	if err != nil {
-		log.Fatal("Failed to open a channel:", err)
-		return err
-	}
-	defer ch.Close()
-	_, err = ch.QueueDeclare(
+// SendPedidoToRabbitMQ envía un pedido a la cola de RabbitMQ
+func (p *RabbitMQProducer) SendPedidoToRabbitMQ(pedido *entities.Pedidos) error {
+	// Declarar la cola (si no existe)
+	_, err := p.Channel.QueueDeclare(
 		"pedidos",
 		true,
 		false,
@@ -40,9 +39,11 @@ func SendPedidoToRabbitMQ(pedido *entities.Pedidos) error {
 		nil,
 	)
 	if err != nil {
-		log.Fatal("Failed to declare a queue:", err)
+		log.Println("Error al declarar la cola:", err)
 		return err
 	}
+
+	// Convertir el pedido a JSON
 	pedidoMensaje := PedidoMensaje{
 		PedidoID:         pedido.Pedido_id,
 		DessertID:        pedido.Dessert_id,
@@ -53,11 +54,12 @@ func SendPedidoToRabbitMQ(pedido *entities.Pedidos) error {
 
 	msg, err := json.Marshal(pedidoMensaje)
 	if err != nil {
-		log.Fatal("Error marshaling JSON:", err)
+		log.Println("Error al convertir a JSON:", err)
 		return err
 	}
 
-	err = ch.Publish(
+	// Publicar el mensaje en la cola
+	err = p.Channel.Publish(
 		"",
 		"pedidos",
 		false,
@@ -68,10 +70,10 @@ func SendPedidoToRabbitMQ(pedido *entities.Pedidos) error {
 		},
 	)
 	if err != nil {
-		log.Fatal("Failed to publish a message:", err)
+		log.Println("Error al enviar el pedido:", err)
 		return err
 	}
 
-	log.Println("Mensaje de pedido enviado correctamente.")
+	log.Println("Pedido enviado correctamente a RabbitMQ.")
 	return nil
 }

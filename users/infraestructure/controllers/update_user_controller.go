@@ -26,6 +26,7 @@ func (c *UpdateUserController) Execute(ctx *gin.Context) {
 	var input struct {
 		Name  string `json:"name"`
 		Email string `json:"email"`
+		Password string `json:"password"`
 	}
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Entrada inválida"})

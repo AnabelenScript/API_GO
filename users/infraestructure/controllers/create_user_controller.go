@@ -16,14 +16,16 @@ func NewCreateUserController(useCase *application.CreateUser) *CreateUserControl
 
 func (c *CreateUserController) Execute(ctx *gin.Context) {
 	var input struct {
-		Name  string `json:"name"`
-		Email string `json:"email"`
+		Name      string `json:"name"`
+		Email     string `json:"email"`
+		User_type int `json: "user_type"`
+		Password  string `json: "password"`
 	}
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Entrada inválida"})
 		return
 	}
-	if err := c.useCase.Execute(input.Name, input.Email); err != nil {
+	if err := c.useCase.Execute(input.Name, input.Email, input.User_type, input.Password); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error al crear usuario"})
 		return
 	}

@@ -13,7 +13,13 @@ func NewCreatePedidos(repo domain.PedidosRepository) *CreatePedidos {
 	return &CreatePedidos{Repo: repo}
 }
 
-func (uc *CreatePedidos) Execute(dessert_id int, user_id int, cantidad_producto int, estatus string) error {
-	pedidos := &entities.Pedidos{Dessert_id: dessert_id, User_id: user_id, Cantidad_producto: cantidad_producto, Estatus: estatus}
-	return uc.Repo.Save(pedidos)
+func (uc *CreatePedidos) Execute(dessert_id int, user_id int, cantidad_producto int, estatus string, total int) error {
+	pedido := &entities.Pedidos{
+		Dessert_id:        dessert_id,
+		User_id:           user_id,
+		Cantidad_producto: cantidad_producto,
+		Estatus:           estatus,
+		Total: total,
+	}
+	return uc.Repo.Save(pedido)
 }

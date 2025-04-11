@@ -28,6 +28,7 @@ func (c *UpdatePedidosController) Execute(ctx *gin.Context) {
 		User_id int `json:"user_id"`
 		Cantidad_producto int `json:"cantidad_producto"`
 		Estatus string `json:"estatus"`
+		Total int `json:"total"`
 	}
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Entrada inválida"})

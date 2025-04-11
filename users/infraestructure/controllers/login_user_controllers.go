@@ -25,7 +25,7 @@ func (c *LoginUserController) Execute(ctx *gin.Context) {
 	user, err := c.useCase.Execute(input.Email, input.Password)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Credenciales inválidas"})
-		return
+		return 
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
@@ -34,6 +34,7 @@ func (c *LoginUserController) Execute(ctx *gin.Context) {
 			"id":        user.ID,
 			"name":      user.Name,
 			"email":     user.Email,
+			"user_type": user.UserType,
 		},
 	})
 }

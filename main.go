@@ -54,9 +54,11 @@ func main() {
 	getPriceDessert := dessertApplication.NewGetPriceDessert(dessertRepo)
 
 	createPedidos := pedidosApplication.NewCreatePedidos(pedidosRepo)
+	reducirInventario := pedidosApplication.NewDecreaseStock(pedidosRepo)
 	deletePedidos := pedidosApplication.NewDeletePedido(pedidosRepo)
 	updatePedidos := pedidosApplication.NewUpdatePedidos(pedidosRepo)
 	getAllPedidos := pedidosApplication.NewGetAllPedidos(pedidosRepo)
+
 	// Controladores
 	createUserController := controllers.NewCreateUserController(createUser)
 	updateUserController := controllers.NewUpdateUserController(updateUser)
@@ -73,10 +75,11 @@ func main() {
 	/*getDeletedDessertController := dessertControllers.NewGetDeletedDessertController(*getDeletedDessert)*/
 	getPriceDessertController := dessertControllers.NewGetPriceDessertController(getPriceDessert)
 
-	createPedidosController := pedidosControllers.NewCreatePedidosController(createPedidos)
+	createPedidosController := pedidosControllers.NewCreatePedidosController(createPedidos, reducirInventario)
 	deletePedidosController := pedidosControllers.NewDeleteUserController(deletePedidos)
 	updatePedidosController := pedidosControllers.NewUpdateUserController(updatePedidos)
 	getAllPedidosController := pedidosControllers.NewGetAllDessertController(getAllPedidos)
+	reducirInventarioController := pedidosControllers.NewDecreaseStockController(reducirInventario)
 
 
 	/*go func() {
@@ -97,7 +100,7 @@ func main() {
 
 	routes.SetupUsersRoutes(r, createUserController, updateUserController, deleteUserController, getAllUserController, /*getLastUSerController*/ loginUserController)
 	dessertRoutes.SetupDessertsRoutes(r, createDessertController, updateDessertController, deleteDessertController, getAllDessertController, /*getLastDesserts, getDeletedDessertController,*/ getPriceDessertController)
-	pedidosRoutes.SetupPedidosRoutes(r, createPedidosController, updatePedidosController,  deletePedidosController, getAllPedidosController)
+	pedidosRoutes.SetupPedidosRoutes(r, createPedidosController, updatePedidosController,  deletePedidosController, getAllPedidosController, reducirInventarioController)
 	log.Println("Server running on :8080")
 	r.Run(":8080")
 }

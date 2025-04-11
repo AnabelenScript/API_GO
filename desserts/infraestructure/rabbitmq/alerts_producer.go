@@ -1,7 +1,7 @@
 package rabbitmq_producer
 
 import (
-	"API_GO/pedidos/domain/entities"
+	"API_GO/desserts/domain/entities"
 	"encoding/json"
 	"log"
 
@@ -9,11 +9,9 @@ import (
 )
 
 type PedidoMensaje struct {
-	PedidoID         int    `json:"pedido_id"`
 	DessertID        int    `json:"dessert_id"`
-	UserID           int    `json:"user_id"`
-	CantidadProducto int    `json:"cantidad_producto"`
-	Estatus          string `json:"estatus"`
+	Quantity         int    `json: "quantity"`
+	Name             string `json:"name"`
 	Total            int    `json:"total"`
 }
 
@@ -25,9 +23,9 @@ func NewRabbitMQProducer(ch *amqp.Channel) *RabbitMQProducer {
 	return &RabbitMQProducer{Channel: ch}
 }
 
-func (p *RabbitMQProducer) SendPedidoToRabbitMQ(pedido *entities.Pedidos) error {
+func (p *RabbitMQProducer) SendPedidoToRabbitMQ(dessert *entities.Dessert) error {
 	_, err := p.Channel.QueueDeclare(
-		"pedidos",
+		"desserts_alert",
 		true,
 		false,
 		false,
@@ -38,7 +36,7 @@ func (p *RabbitMQProducer) SendPedidoToRabbitMQ(pedido *entities.Pedidos) error 
 		log.Println("Error al declarar la cola:", err)
 		return err
 	}
-	pedidoMensaje := PedidoMensaje{
+	dessertMensaje := desserMensaje{
 		PedidoID:         pedido.Pedido_id,
 		DessertID:        pedido.Dessert_id,
 		UserID:           pedido.User_id,

@@ -7,4 +7,5 @@ type Pedidos struct {
 	User_id    int
 	Cantidad_producto int
 	Estatus string
+	Total  int
 }

@@ -22,8 +22,8 @@ func NewMySQLPedidosRepository(db *sql.DB, ch *amqp.Channel) domain.PedidosRepos
 }
 
 func (r *MySQLPedidosRepository) Save(pedido *entities.Pedidos) error {
-	query := "INSERT INTO pedidos (dessert_id, user_id, cantidad_producto, estatus) VALUES (?, ?, ?, ?)"
-	result, err := r.DB.Exec(query, pedido.Dessert_id, pedido.User_id, pedido.Cantidad_producto, pedido.Estatus)
+	query := "INSERT INTO pedidos (dessert_id, user_id, cantidad_producto, estatus, total) VALUES (?, ?, ?, ?, ?)"
+	result, err := r.DB.Exec(query, pedido.Dessert_id, pedido.User_id, pedido.Cantidad_producto, pedido.Estatus, pedido.Total)
 	if err != nil {
 		log.Printf("Error al agregar el pedido: %v", err)
 		return err
@@ -45,7 +45,7 @@ func (r *MySQLPedidosRepository) Save(pedido *entities.Pedidos) error {
 
 
 func (r *MySQLPedidosRepository) FindByID(pedido_id uint) (*entities.Pedidos, error) {
-	query := "SELECT pedido_id, dessert_id, user_id, cantidad_producto, estatus FROM pedidos WHERE pedido_id = ?"
+	query := "SELECT pedido_id, dessert_id, user_id, cantidad_producto, estatus, total FROM pedidos WHERE pedido_id = ?"
 	row := r.DB.QueryRow(query, pedido_id)
 
 	var pedidos entities.Pedidos
@@ -61,8 +61,8 @@ func (r *MySQLPedidosRepository) FindByID(pedido_id uint) (*entities.Pedidos, er
 }
 
 func (r *MySQLPedidosRepository) Update(pedido *entities.Pedidos) error {
-	query := "UPDATE pedidos SET dessert_id = ?, user_id = ?, cantidad_producto = ?, estatus = ? WHERE pedido_id = ?"
-	result, err := r.DB.Exec(query, pedido.Dessert_id, pedido.User_id, pedido.Cantidad_producto, pedido.Estatus)
+	query := "UPDATE pedidos SET dessert_id = ?, user_id = ?, cantidad_producto = ?, estatus = ?, total = ? WHERE pedido_id = ?"
+	result, err := r.DB.Exec(query, pedido.Dessert_id, pedido.User_id, pedido.Cantidad_producto, pedido.Estatus, pedido.Total)
 	if err != nil {
 		log.Printf("Error al actualizar el postre: %v", err)
 		return err
@@ -71,7 +71,6 @@ func (r *MySQLPedidosRepository) Update(pedido *entities.Pedidos) error {
 	if rowsAffected == 0 {
 		return errors.New("no se encontró el postre para actualizar :(")
 	}
-
 	return nil
 }
 
@@ -87,23 +86,21 @@ func (r *MySQLPedidosRepository) Delete(pedidoID uint) error {
 	if rowsAffected == 0 {
 		return errors.New("no se encontró el postre para eliminar")
 	}
-
 	return nil
 }
 
 func (r *MySQLPedidosRepository) GetAll() ([]*entities.Pedidos, error) {
-	query := "SELECT pedido_id, dessert_id, user_id, cantidad_productos, estatus FROM pedidos"
+	query := "SELECT pedido_id, dessert_id, user_id, cantidad_productos, estatus, total FROM pedidos"
 	rows, err := r.DB.Query(query)
 	if err != nil {
 		log.Printf("Error al obtener todos los postres: %v", err)
 		return nil, err
 	}
 	defer rows.Close()
-
 	var pedidos []*entities.Pedidos
 	for rows.Next() {
 		pedido := &entities.Pedidos{}
-		if err := rows.Scan(&pedido.Pedido_id, &pedido.Dessert_id, &pedido.User_id, &pedido.Cantidad_producto, &pedido.Estatus); err != nil {
+		if err := rows.Scan(&pedido.Pedido_id, &pedido.Dessert_id, &pedido.User_id, &pedido.Cantidad_producto, &pedido.Estatus, &pedido.Total); err != nil {
 			log.Printf("Error al escanear el postre: %v", err)
 			return nil, err
 		}
@@ -111,4 +108,19 @@ func (r *MySQLPedidosRepository) GetAll() ([]*entities.Pedidos, error) {
 	}
 
 	return pedidos, nil
+}
+
+func (r *MySQLPedidosRepository) DecreaseDessertStock(dessertID int, quantity int) error {
+	query := "UPDATE dessert SET quantity = quantity - ? WHERE ID = ? AND quantity >= ?"
+	result, err := r.DB.Exec(query, quantity, dessertID, quantity)
+	if err != nil {
+		log.Printf("Error al reducir el inventario: %v", err)
+		return err
+	}
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		return errors.New("no hay suficientes postres en inventario")
+	}
+	log.Println("Inventario reducido correctamente.")
+	return nil
 }

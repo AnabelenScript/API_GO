@@ -8,4 +8,5 @@ type PedidosRepository interface {
 	Update(pedidos *entities.Pedidos) error
 	Delete(pedido_id uint) error
 	GetAll() ([]*entities.Pedidos, error)
+	DecreaseDessertStock(dessertID int, cantidad int) error
 }
